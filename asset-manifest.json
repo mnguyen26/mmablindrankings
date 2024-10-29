@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/mmablindrankings/static/css/main.e6c13ad2.css",
+    "main.js": "/mmablindrankings/static/js/main.b01e1284.js",
+    "static/js/453.28d48872.chunk.js": "/mmablindrankings/static/js/453.28d48872.chunk.js",
+    "index.html": "/mmablindrankings/index.html",
+    "main.e6c13ad2.css.map": "/mmablindrankings/static/css/main.e6c13ad2.css.map",
+    "main.b01e1284.js.map": "/mmablindrankings/static/js/main.b01e1284.js.map",
+    "453.28d48872.chunk.js.map": "/mmablindrankings/static/js/453.28d48872.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.b01e1284.js"
+  ]
+}
