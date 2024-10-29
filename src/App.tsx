@@ -7,6 +7,7 @@ import fighter_ratings from './JSON/fighter_peak_elo_records.json';
 
 interface RandomizerProps {
     isRunning: boolean;
+    fighterRankings: string[];
     pickFighter: (fighter: string) => void;
 }
 
@@ -15,22 +16,26 @@ interface RankingsProps {
     setRanking: (rank: number) => void;
 }
 
-const FighterPics = () => {
-    const blankPic = 'https://dmxg5wxfqgb4u.cloudfront.net/styles/teaser/s3/image/fighter_images/ComingSoon/comingsoon_headshot_odopod.png?VersionId=6Lx8ImOpYf0wBYQKs_FGYIkuSIfTN0f0\u0026amp;itok=pYDOjN8k'
-    return (
-        <div>
-            {Object.values(fighter_ratings).map(fighter => {
-                const picURL = fighter_pics.find(f => f.Name === fighter.Name)?.PicURL;
-                return (
-                    <>
-                    <img key={fighter.Name} src={picURL ? picURL : blankPic} />
-                    {fighter.Name}
-                    </>
-                );
-            })}
-        </div>
-    );
+interface ScoreProps {
+    fighterRankings: string[]
 }
+
+// const FighterPics = () => {
+//     const blankPic = 'https://dmxg5wxfqgb4u.cloudfront.net/styles/teaser/s3/image/fighter_images/ComingSoon/comingsoon_headshot_odopod.png?VersionId=6Lx8ImOpYf0wBYQKs_FGYIkuSIfTN0f0\u0026amp;itok=pYDOjN8k'
+//     return (
+//         <div>
+//             {Object.values(fighter_ratings).map(fighter => {
+//                 const picURL = fighter_pics.find(f => f.Name === fighter.Name)?.PicURL;
+//                 return (
+//                     <>
+//                     <img key={fighter.Name} src={picURL ? picURL : blankPic} />
+//                     {fighter.Name}
+//                     </>
+//                 );
+//             })}
+//         </div>
+//     );
+// }
 
 const Randomizer = (props: RandomizerProps) => {
     const [randomFighter, setRandomFighter] = useState('');
@@ -38,12 +43,17 @@ const Randomizer = (props: RandomizerProps) => {
 
     const blankPic = 'https://dmxg5wxfqgb4u.cloudfront.net/styles/teaser/s3/image/fighter_images/ComingSoon/comingsoon_headshot_odopod.png?VersionId=6Lx8ImOpYf0wBYQKs_FGYIkuSIfTN0f0\u0026amp;itok=pYDOjN8k'
 
+    const generateRandomFighter = ():string => {
+        const randomIndex = Math.floor(Math.random() * Object.keys(fighter_ratings).length);
+        const fighter = Object.values(fighter_ratings)[randomIndex].Name;
+
+        return fighter;
+    }
+
     useEffect(() => {
         const interval = setInterval(() => {
             if (props.isRunning) {
-                const randomIndex = Math.floor(Math.random() * Object.keys(fighter_ratings).length);
-                const fighter = Object.values(fighter_ratings)[randomIndex].Name;
-                setRandomFighter(fighter);
+                setRandomFighter(generateRandomFighter());
             }
         }, 50);
 
@@ -52,24 +62,31 @@ const Randomizer = (props: RandomizerProps) => {
 
     useEffect(() => {
         if (!props.isRunning && randomFighter) {
-            props.pickFighter(randomFighter);
+            let newFighter = randomFighter;
 
-            const picURL = fighter_pics.find(f => f.Name === randomFighter)?.PicURL;
+            setRandomFighter(newFighter);
+            props.pickFighter(newFighter);
+
+            const picURL = fighter_pics.find(f => f.Name === newFighter)?.PicURL;
             setFighterPic(picURL ? picURL : blankPic);
         }
-    }, [props.isRunning])
+    }, [props.isRunning, randomFighter])
 
     return (
         <>
+        <div style={{ width: '10em', height: '10em', overflow: 'hidden' }}>
         {!props.isRunning && fighterPic && (
-            <div>
-            <img src={fighterPic} alt={randomFighter} />
-            Select a rank for {randomFighter}
-            </div>
+            <img src={fighterPic} alt={randomFighter} style={{ width: '100%', height: 'auto' }} />
         )}
-        {props.isRunning && randomFighter && (
-            <div>{randomFighter}</div>
-        )}
+        </div>
+        <div style={{ width: '20em', height: '2em', overflow: 'hidden'}}>
+            {!props.isRunning && randomFighter && (
+                <div>Select a rank for {randomFighter}</div>
+            )}
+            {props.isRunning && randomFighter && (
+                <div>{randomFighter}</div>
+            )}
+        </div>
         </>
     );
 }
@@ -81,14 +98,60 @@ const Rankings = (props: RankingsProps) => {
     return (
         <>
         {Array.from({ length: 10 }, (_, index) => (
-            <div key={index + 1}>
-                {index + 1}. {props.fighterRankings[index] != '' ? props.fighterRankings[index] : (
-                    <Button onClick={() => props.setRanking(index + 1)}>Select</Button>
-                )}
+            <div 
+                key={index + 1} 
+                onClick={() => {
+                    if (props.fighterRankings[index] !== '') return;
+                    props.setRanking(index + 1);
+                }}
+                style={{ cursor: props.fighterRankings[index] !== '' ? 'not-allowed' : 'pointer', padding: '20px', border: '1px solid black' }}
+            >
+                {index + 1}. 
+                {props.fighterRankings[index] !== '' && (` ${props.fighterRankings[index]}`) }
             </div>
         ))}
         </>
     )
+}
+
+const Score = (props: ScoreProps) => {
+
+    const getEloByName = (name: string) => Object.values(fighter_ratings).find(fighter => fighter.Name === name)?.Elo || null;
+    
+    const calculateScore = () => {
+        const { fighterRankings } = props;
+        let correctCount = 0;
+        let totalComparisons = 0;
+
+        for (let i = 0; i < fighterRankings.length; i++) {
+            const currentFighter = fighterRankings[i];
+            const currentElo = getEloByName(currentFighter);
+
+            for (let j = i + 1; j < fighterRankings.length; j++) {
+                const comparedFighter = fighterRankings[j];
+                const comparedElo = getEloByName(comparedFighter);
+
+                if (comparedElo !== null && currentElo !== null) {
+                    totalComparisons++;
+                    if (currentElo >= comparedElo) {
+                        correctCount++;
+                    }
+                }
+            }
+        }
+
+        return (correctCount / totalComparisons) * 100;
+    }
+
+    const scorePercentage = calculateScore();
+
+    return (
+        <>
+            {props.fighterRankings.every(fighter => fighter !== '') && (
+                <div>Score: {scorePercentage.toFixed(2)}%</div>
+            )}
+        </>
+    );
 }
 
 const FighterPicker = () => {
@@ -109,16 +172,31 @@ const FighterPicker = () => {
         newRankings[rank - 1] = chosenFighter;
         setRankings(newRankings);
         setChosenFighter('');
-        setIsRunning(true);
+
+        if (newRankings.every(fighter => fighter !== '')) {
+            setIsRunning(false);
+        } else {
+            setIsRunning(true);
+        }
     }
 
     return (
         <>
-        <Randomizer isRunning={isRunning} pickFighter={handleChosenFighter}/>
-        {isRunning && (
-        <Button onClick={handleStop}>Pick a Fighter</Button>
-        )}
-        <Rankings fighterRankings={rankings} setRanking={handleSetRanking}/>
+        <Randomizer 
+            isRunning={isRunning}
+            fighterRankings={rankings}
+            pickFighter={handleChosenFighter}
+        />
+        <Score fighterRankings={rankings}/>
+        <div style={{width: '10em', height: '2em', overflow: 'hidden'}}>
+            {isRunning && (
+            <Button onClick={handleStop}>Stop</Button>
+            )}
+        </div>
+        <Rankings 
+            fighterRankings={rankings} 
+            setRanking={handleSetRanking}
+        />
         </>
     )
 }
