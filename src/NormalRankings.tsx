@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-// import {MantineProvider} from '@mantine/core';
+import {MantineProvider} from '@mantine/core';
 
 import fighter_pics from './JSON/fighter_pics.json';
 import fighter_ratings from './JSON/fighter_peak_elo_records.json';
@@ -22,27 +22,30 @@ interface ScoreProps {
     fighterRankings: string[]
 }
 
-interface BlindRankingsProps {
+interface NormalRankingsProps {
     show: boolean
 }
 
 const Randomizer = (props: RandomizerProps) => {
-    const [randomFighter, setRandomFighter] = useState('');
-    const [fighterPic, setFighterPic] = useState('');
+    const [randomFighters, setRandomFighters] = useState<string[]>([]);
+    const [fighterPics, setFighterPics] = useState<string[]>([]);
 
     const blankPic = 'https://dmxg5wxfqgb4u.cloudfront.net/styles/teaser/s3/image/fighter_images/ComingSoon/comingsoon_headshot_odopod.png?VersionId=6Lx8ImOpYf0wBYQKs_FGYIkuSIfTN0f0\u0026amp;itok=pYDOjN8k'
 
-    const generateRandomFighter = ():string => {
-        const randomIndex = Math.floor(Math.random() * Object.keys(fighter_ratings).length);
-        const fighter = Object.values(fighter_ratings)[randomIndex].Name;
-
-        return fighter;
+    const generateRandomFighters = (): string[] => {
+        const fighters = [];
+        for (let i = 0; i < 10; i++) {
+            const randomIndex = Math.floor(Math.random() * Object.keys(fighter_ratings).length);
+            const fighter = Object.values(fighter_ratings)[randomIndex].Name;
+            fighters.push(fighter);
+        }
+        return fighters;
     }
 
     useEffect(() => {
         const interval = setInterval(() => {
             if (props.isRunning) {
-                setRandomFighter(generateRandomFighter());
+                setRandomFighters(generateRandomFighters());
             }
         }, 50);
 
@@ -50,37 +53,45 @@ const Randomizer = (props: RandomizerProps) => {
     }, [props.isRunning]);
 
     useEffect(() => {
-        if (!props.isRunning && randomFighter) {
-            let newFighter = randomFighter;
-
-            setRandomFighter(newFighter);
-            props.pickFighter(newFighter);
-
-            const picURL = fighter_pics.find(f => f.Name === newFighter)?.PicURL;
-            setFighterPic(picURL ? picURL : blankPic);
+        if (!props.isRunning) {
+            const picURLs: string[] = [];
+            randomFighters.forEach(fighter => {
+                const picURL = fighter_pics.find(f => f.Name == fighter)?.PicURL || blankPic;
+                picURLs.push(picURL);
+            })
+            setFighterPics(picURLs);
         }
-    }, [props.isRunning, randomFighter])
+    }, [props.isRunning]);
 
     return (
         <>
         <div onClick={props.isRunning ? props.handleStop : undefined} style={{ cursor: props.isRunning ? 'pointer' : 'default' }}>
-            <div style={{ width: '10em', height: '10em', overflow: 'hidden', margin: '0 auto' }}>
-                {!props.isRunning && fighterPic && (
-                    <img src={fighterPic} alt={randomFighter} style={{ width: '100%', height: 'auto' }} />
+            <div style={{ width: '24em', height: '24em', overflow: 'hidden', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1em' }}>
+                {!props.isRunning && (
+                    fighterPics.map((pic: string, index: number) => (
+                        <div key={index} style={{ textAlign: 'center' }}>
+                            <img src={pic} alt={randomFighters[index]} style={{ width: '25%', height: 'auto', maxHeight: '6em' }} />
+                            <div style={{ fontSize: '0.7em' }}>
+                                {randomFighters[index]}
+                            </div>
+                        </div>
+                    ))
                 )}
-            </div>
-            <div style={{ width: '20em', height: '2em', overflow: 'hidden', textAlign: 'center' }}>
-                {!props.isRunning && randomFighter && (
-                    <div>Select a rank for {randomFighter}</div>
-                )}
-                {props.isRunning && randomFighter && (
-                    <div>{randomFighter}</div>
+                {props.isRunning && randomFighters.length > 0 && (
+                    randomFighters.map((fighter: string) => (
+                        <div style={{ fontSize: '0.7em', textAlign: 'center' }}>{fighter}</div>
+                    ))
                 )}
             </div>
             <div style={{ textAlign: 'center', margin: '1em', width: '20em', height: '2em' }}>
                 {props.isRunning && (
                     <>
                     Click to stop
+                    </>
+                )}
+                {!props.isRunning && (
+                    <>
+                    Select a fighter to rank
                     </>
                 )}
             </div>
@@ -104,13 +115,8 @@ const Rankings = (props: RankingsProps) => {
                     props.setRanking(index + 1);
                 }}
             >
-                {index + 1}.
-                {props.fighterRankings[index] == '' && (
-                    <span style={{ color: 'lightgray' }}> Click to rank here</span>
-                )}
-                {props.fighterRankings[index] !== '' && (
-                    ` ${props.fighterRankings[index]}`
-                )}
+                {index + 1}. 
+                {props.fighterRankings[index] !== '' && (` ${props.fighterRankings[index]}`) }
             </div>
         ))}
         </>
@@ -202,19 +208,25 @@ const FighterPicker = () => {
     )
 }
 
-const BlindRankings = (props: BlindRankingsProps) => {
+const NormalRankings = (props: NormalRankingsProps) => {
+
+    useEffect(() => {
+        if (props.show) {
+            window.scrollTo(0, 0);
+        }
+    }, [props.show]);
 
     return (
         <>
         {props.show && (
-        // <MantineProvider >
+        <MantineProvider >
             <div style={{ margin: '2em', padding: '1em' }}>
                 <FighterPicker />
             </div>
-        // </MantineProvider>
+        </MantineProvider>
         )}
         </>
     )
 }
 
-export default BlindRankings;
+export default NormalRankings;

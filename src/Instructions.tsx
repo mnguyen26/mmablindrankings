@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 
 import {MantineProvider, Button} from '@mantine/core';
+import '@mantine/core/styles.css';
 
 interface InstructionsProps {
     show: boolean;

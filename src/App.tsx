@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import BlindRankings from './BlindRankings'
 import InstructionsScreen from './Instructions';
+import NormalRankings from './NormalRankings';
 
 function App() {
     const [showInstructions, setShowInstructions] = useState<boolean>(true);
@@ -18,7 +19,7 @@ function App() {
             show={showInstructions}
             play={handlePlay}
         />
-        <BlindRankings show={showBlindRankings}/>
+        <NormalRankings show={showBlindRankings}/>
         </>
     )
 }
