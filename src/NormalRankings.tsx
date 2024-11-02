@@ -29,6 +29,7 @@ interface NormalRankingsProps {
 const Randomizer = (props: RandomizerProps) => {
     const [randomFighters, setRandomFighters] = useState<string[]>([]);
     const [fighterPics, setFighterPics] = useState<string[]>([]);
+    const [selectedFighter, setSelectedFighter] = useState<string>('');
 
     const blankPic = 'https://dmxg5wxfqgb4u.cloudfront.net/styles/teaser/s3/image/fighter_images/ComingSoon/comingsoon_headshot_odopod.png?VersionId=6Lx8ImOpYf0wBYQKs_FGYIkuSIfTN0f0\u0026amp;itok=pYDOjN8k'
 
@@ -40,6 +41,11 @@ const Randomizer = (props: RandomizerProps) => {
             fighters.push(fighter);
         }
         return fighters;
+    }
+
+    const handleSelectFighter = (fighter: string) => {
+        setSelectedFighter(fighter);
+        props.pickFighter(fighter);
     }
 
     useEffect(() => {
@@ -65,12 +71,27 @@ const Randomizer = (props: RandomizerProps) => {
 
     return (
         <>
-        <div onClick={props.isRunning ? props.handleStop : undefined} style={{ cursor: props.isRunning ? 'pointer' : 'default' }}>
-            <div style={{ width: '24em', height: '24em', overflow: 'hidden', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1em' }}>
+        <div onClick={props.isRunning ? props.handleStop : undefined} style={{margin: '0 1em 0 1em', cursor: props.isRunning ? 'pointer' : 'default' }}>
+            <div style={{ width: '20em', height: '30em', overflow: 'hidden', margin: '1em 1em', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '.1em' }}>
                 {!props.isRunning && (
                     fighterPics.map((pic: string, index: number) => (
-                        <div key={index} style={{ textAlign: 'center' }}>
-                            <img src={pic} alt={randomFighters[index]} style={{ width: '25%', height: 'auto', maxHeight: '6em' }} />
+                        <div 
+                            key={index} 
+                            style={{ 
+                                margin: '0 0 0 .2em',
+                                textAlign: 'center',
+                                borderRadius: '10px',
+                                border: randomFighters[index] === selectedFighter ? '1.5px solid lightgray' : 'none',
+                                backgroundColor: randomFighters[index] === selectedFighter ? 'rgba(33, 150, 243, 0.3)' : 'transparent',
+                                opacity: props.fighterRankings.includes(randomFighters[index]) ? 0.3 : 1,
+                                boxShadow: '-2px 3px 4px 0px rgba(0, 0, 0, 0.1)'
+                            }} 
+                            onClick={() => handleSelectFighter(randomFighters[index])}
+                        >
+                            <img 
+                                src={pic} alt={randomFighters[index]} 
+                                style={{ width: '53%', height: 'auto', margin: '.5em 0 0 0' }} 
+                            />
                             <div style={{ fontSize: '0.7em' }}>
                                 {randomFighters[index]}
                             </div>
@@ -89,7 +110,7 @@ const Randomizer = (props: RandomizerProps) => {
                     Click to stop
                     </>
                 )}
-                {!props.isRunning && (
+                {!props.isRunning && selectedFighter == '' && (
                     <>
                     Select a fighter to rank
                     </>
@@ -108,15 +129,16 @@ const Rankings = (props: RankingsProps) => {
         <>
         {Array.from({ length: 10 }, (_, index) => (
             <div 
-                style={{ cursor: props.fighterRankings[index] !== '' ? 'not-allowed' : 'pointer', width: '20em', padding: '20px', border: '1px solid black' }}
+                style={{ cursor: 'pointer', width: '20em', padding: '20px', border: '1px solid black' }}
                 key={index + 1} 
-                onClick={() => {
-                    if (props.fighterRankings[index] !== '') return;
-                    props.setRanking(index + 1);
-                }}
+                onClick={() => {props.setRanking(index + 1);}}
             >
                 {index + 1}. 
-                {props.fighterRankings[index] !== '' && (` ${props.fighterRankings[index]}`) }
+                {props.fighterRankings[index] !== '' ? (
+                    ` ${props.fighterRankings[index]}`
+                ) : (
+                    <span style={{ color: 'lightgray' }}> Click to rank here</span>
+                )}
             </div>
         ))}
         </>
@@ -177,15 +199,20 @@ const FighterPicker = () => {
     }
 
     const handleSetRanking = (rank: number) => {
-        const newRankings = [...rankings];
-        newRankings[rank - 1] = chosenFighter;
-        setRankings(newRankings);
-        setChosenFighter('');
-
-        if (newRankings.every(fighter => fighter !== '')) {
-            setIsRunning(false);
-        } else {
-            setIsRunning(true);
+        if (chosenFighter !='') {
+            const newRankings = [...rankings];
+            
+            const existingIndex = newRankings.indexOf(chosenFighter);
+            if (existingIndex !== -1) {
+                newRankings[existingIndex] = '';
+            }
+            newRankings[rank - 1] = chosenFighter;
+    
+            setRankings(newRankings);
+    
+            if (newRankings.every(fighter => fighter !== '')) {
+                setChosenFighter('');
+            }
         }
     }
 
@@ -220,7 +247,7 @@ const NormalRankings = (props: NormalRankingsProps) => {
         <>
         {props.show && (
         <MantineProvider >
-            <div style={{ margin: '2em', padding: '1em' }}>
+            <div style={{ margin: '1em' }}>
                 <FighterPicker />
             </div>
         </MantineProvider>
