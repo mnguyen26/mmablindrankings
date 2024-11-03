@@ -6,10 +6,17 @@ import NormalRankings from './NormalRankings';
 
 function App() {
     const [showInstructions, setShowInstructions] = useState<boolean>(true);
+    const [showRankings, setShowRankings] = useState<boolean>(false);
     const [showBlindRankings, setShowBlindRankings] = useState<boolean>(false);
 
     const handlePlay = () => {
         setShowInstructions(false);
+        setShowRankings(true);
+    }
+
+    const handlePlayBlindRankings = () => {
+        setShowInstructions(false);
+        setShowRankings(false);
         setShowBlindRankings(true);
     }
 
@@ -19,7 +26,13 @@ function App() {
             show={showInstructions}
             play={handlePlay}
         />
-        <NormalRankings show={showBlindRankings}/>
+        <NormalRankings 
+            show={showRankings}
+            handleNext={handlePlayBlindRankings}
+        />
+        <BlindRankings 
+            show={showBlindRankings}
+        />
         </>
     )
 }

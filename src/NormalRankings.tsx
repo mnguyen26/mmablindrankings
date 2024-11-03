@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import {MantineProvider} from '@mantine/core';
+import {MantineProvider, Button} from '@mantine/core';
 
 import fighter_pics from './JSON/fighter_pics.json';
 import fighter_ratings from './JSON/fighter_peak_elo_records.json';
@@ -20,10 +20,21 @@ interface RankingsProps {
 
 interface ScoreProps {
     fighterRankings: string[]
+    show: boolean;
+}
+
+interface NextButtonProps {
+    onClick: () => void;
+    show: boolean;
+}
+
+interface FighterPickerProps {
+    handleNext: () => void;
 }
 
 interface NormalRankingsProps {
     show: boolean
+    handleNext: () => void;
 }
 
 const Randomizer = (props: RandomizerProps) => {
@@ -129,7 +140,7 @@ const Rankings = (props: RankingsProps) => {
         <>
         {Array.from({ length: 10 }, (_, index) => (
             <div 
-                style={{ cursor: 'pointer', width: '20em', padding: '20px', border: '1px solid black' }}
+                style={{ cursor: 'pointer', width: '20em', margin: '0 0 .2em 0', padding: '20px', border: '.5px solid lightgray', borderRadius: '10px' }}
                 key={index + 1} 
                 onClick={() => {props.setRanking(index + 1);}}
             >
@@ -178,17 +189,33 @@ const Score = (props: ScoreProps) => {
 
     return (
         <>
-            {props.fighterRankings.every(fighter => fighter !== '') && (
-                <div>Score: {scorePercentage.toFixed(2)}%</div>
-            )}
+        {props.show && (
+            <div style={{fontSize: '1.5em', margin: '.3em 0 0 0'}}>
+                Score: {scorePercentage.toFixed(0)}%
+            </div>
+        )}
         </>
     );
 }
 
-const FighterPicker = () => {
+const NextButton = (props: NextButtonProps) =>  {
+    return (
+        <>
+        {props.show && (
+        <Button onClick={props.onClick}>
+            Next: Blind Rankings
+        </Button>
+        )}
+        </>
+    )
+}
+
+const FighterPicker = (props: FighterPickerProps) => {
     const [isRunning, setIsRunning] = useState<boolean>(true);
     const [chosenFighter, setChosenFighter] = useState<string>('');
     const [rankings, setRankings] = useState<string[]>(['','','','','','','','','','']);
+    const [showScore, setShowScore] = useState<boolean>(false);
+    const [showNext, setShowNext] = useState<boolean>(false);
 
     const handleStop = () => {
         setIsRunning(false);
@@ -212,8 +239,14 @@ const FighterPicker = () => {
     
             if (newRankings.every(fighter => fighter !== '')) {
                 setChosenFighter('');
+                setShowScore(true);
+                setShowNext(true);
             }
         }
+    }
+
+    const handleNextScreen = () => {
+        props.handleNext();
     }
 
     return (
@@ -225,10 +258,17 @@ const FighterPicker = () => {
                 pickFighter={handleChosenFighter}
                 handleStop={handleStop}
             />
-            <Score fighterRankings={rankings}/>
             <Rankings 
                 fighterRankings={rankings} 
                 setRanking={handleSetRanking}
+            />
+            <Score 
+                show={showScore}
+                fighterRankings={rankings}
+            />
+            <NextButton 
+                show={showNext}
+                onClick={handleNextScreen}
             />
         </div>
         </>
@@ -248,7 +288,7 @@ const NormalRankings = (props: NormalRankingsProps) => {
         {props.show && (
         <MantineProvider >
             <div style={{ margin: '1em' }}>
-                <FighterPicker />
+                <FighterPicker handleNext={props.handleNext} />
             </div>
         </MantineProvider>
         )}
