@@ -49,17 +49,16 @@ const Randomizer = (props: RandomizerProps) => {
         return () => clearInterval(interval);
     }, [props.isRunning]);
 
+    const {isRunning, pickFighter} = props;
     useEffect(() => {
-        if (!props.isRunning && randomFighter) {
-            let newFighter = randomFighter;
+        if (!isRunning && randomFighter) {
+            setRandomFighter(randomFighter);
+            pickFighter(randomFighter);
 
-            setRandomFighter(newFighter);
-            props.pickFighter(newFighter);
-
-            const picURL = fighter_pics.find(f => f.Name === newFighter)?.PicURL;
+            const picURL = fighter_pics.find(f => f.Name === randomFighter)?.PicURL;
             setFighterPic(picURL ? picURL : blankPic);
         }
-    }, [props.isRunning, randomFighter])
+    }, [isRunning])
 
     return (
         <>
@@ -106,7 +105,7 @@ const Rankings = (props: RankingsProps) => {
                 }}
             >
                 {index + 1}.
-                {props.fighterRankings[index] == '' && (
+                {props.fighterRankings[index] === '' && (
                     <span style={{ color: 'lightgray' }}> Click to rank here</span>
                 )}
                 {props.fighterRankings[index] !== '' && (

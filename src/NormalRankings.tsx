@@ -67,16 +67,15 @@ const Randomizer = (props: RandomizerProps) => {
         return () => clearInterval(interval);
     }, [props.isRunning]);
 
+    const { isRunning } = props;
     useEffect(() => {
-        if (!props.isRunning) {
-            const picURLs: string[] = [];
-            randomFighters.forEach(fighter => {
-                const picURL = fighter_pics.find(f => f.Name == fighter)?.PicURL || blankPic;
-                picURLs.push(picURL);
-            })
+        if (!isRunning) {
+            const picURLs = randomFighters.map(
+                fighter => fighter_pics.find(f => f.Name === fighter)?.PicURL || blankPic
+            );
             setFighterPics(picURLs);
         }
-    }, [props.isRunning]);
+    }, [isRunning]);
 
     return (
         <>
@@ -120,7 +119,7 @@ const Randomizer = (props: RandomizerProps) => {
                     Click to stop
                     </>
                 )}
-                {!props.isRunning && selectedFighter == '' && (
+                {!props.isRunning && selectedFighter === '' && (
                     <>
                     Select a fighter to rank
                     </>
@@ -233,7 +232,7 @@ const NormalRankings = (props: NormalRankingsProps) => {
     }
 
     const handleSetRanking = (rank: number) => {
-        if (chosenFighter !='') {
+        if (chosenFighter !=='') {
             const newRankings = [...rankings];
             
             const existingIndex = newRankings.indexOf(chosenFighter);

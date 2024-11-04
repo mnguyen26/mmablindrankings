@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import BlindRankings from './BlindRankings'
 import InstructionsScreen from './Instructions';
