@@ -25,20 +25,31 @@
   text-align: center;
   border-radius: 10px;
   box-shadow: -2px 3px 4px 0px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  cursor: default;
+}
+
+.fighter-card-container {
+  width: 20em;
+  height: 10em;
+  overflow: hidden;
+  margin: 1em 1em;
 }
 
 .fighter-card {
-  width: 10em;
-  height: 10em;
-  overflow: hidden;
-  margin: 0 auto;
+  width: 95%;
+  height: 95%;
+  margin: .2em .2em .2em .2em;
+  text-align: center;
   border-radius: 10px;
   box-shadow: -2px 3px 4px 0px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  cursor: default;
 }
 
 .fighter-img {
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 100%;
 }
 
 .instruction-text {
@@ -46,6 +57,8 @@
   margin: 1em;
   width: 20em;
   height: 2em;
+  user-select: none;
+  cursor: default;
 }
 
 .ranking-card {
@@ -77,4 +90,12 @@
   flex-direction: column;
   align-items: center;
   margin: 1em;
+}
+
+.blind-rankings-container {
+  margin: 2em; 
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }

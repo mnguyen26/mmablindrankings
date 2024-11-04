@@ -20,6 +20,12 @@ function App() {
         setShowBlindRankings(true);
     }
 
+    const handleAgain = () => {
+        setShowInstructions(false);
+        setShowRankings(true);
+        setShowBlindRankings(false);
+    }
+
     return (
         <>
         <InstructionsScreen 
@@ -32,6 +38,7 @@ function App() {
         />
         <BlindRankings 
             show={showBlindRankings}
+            handleAgain={handleAgain}
         />
         </>
     )

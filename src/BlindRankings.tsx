@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-// import {MantineProvider} from '@mantine/core';
+import {MantineProvider, Button, MantineThemeProvider} from '@mantine/core';
 
 import fighter_pics from './JSON/fighter_pics.json';
 import fighter_ratings from './JSON/fighter_peak_elo_records.json';
@@ -19,11 +19,18 @@ interface RankingsProps {
 }
 
 interface ScoreProps {
+    show: boolean;
     fighterRankings: string[]
+}
+
+interface AgainButtonProps {
+    onClick: () => void;
+    show: boolean;
 }
 
 interface BlindRankingsProps {
     show: boolean
+    handleAgain: () => void;
 }
 
 const Randomizer = (props: RandomizerProps) => {
@@ -33,8 +40,12 @@ const Randomizer = (props: RandomizerProps) => {
     const blankPic = 'https://dmxg5wxfqgb4u.cloudfront.net/styles/teaser/s3/image/fighter_images/ComingSoon/comingsoon_headshot_odopod.png?VersionId=6Lx8ImOpYf0wBYQKs_FGYIkuSIfTN0f0\u0026amp;itok=pYDOjN8k'
 
     const generateRandomFighter = ():string => {
-        const randomIndex = Math.floor(Math.random() * Object.keys(fighter_ratings).length);
-        const fighter = Object.values(fighter_ratings)[randomIndex].Name;
+        let fighter = '';
+
+        while (props.fighterRankings.indexOf(fighter) !== -1 || fighter === '') {
+            const randomIndex = Math.floor(Math.random() * Object.keys(fighter_ratings).length);
+            fighter = Object.values(fighter_ratings)[randomIndex].Name;
+        }
 
         return fighter;
     }
@@ -63,10 +74,12 @@ const Randomizer = (props: RandomizerProps) => {
     return (
         <>
         <div onClick={props.isRunning ? props.handleStop : undefined} style={{ cursor: props.isRunning ? 'pointer' : 'default' }}>
-            <div className="fighter-card">
-                {!props.isRunning && fighterPic && (
+            <div className="fighter-card-container">
+            {!props.isRunning && fighterPic && (
+                <div className="fighter-card">
                     <img src={fighterPic} className="fighter-img" alt={randomFighter} />
-                )}
+                </div>
+            )}
             </div>
             <div className="instruction-text">
                 {!props.isRunning && randomFighter && (
@@ -150,17 +163,96 @@ const Score = (props: ScoreProps) => {
 
     return (
         <>
-            {props.fighterRankings.every(fighter => fighter !== '') && (
-                <div>Score: {scorePercentage.toFixed(2)}%</div>
+            {props.show && (
+            <div className="score-text">
+                Score: {scorePercentage.toFixed(0)}%
+            </div>
             )}
         </>
     );
 }
 
-const FighterPicker = () => {
+const AgainButton = (props: AgainButtonProps) =>  {
+    return (
+        <>
+        {props.show && (
+        <div className="next-button">
+            <Button onClick={props.onClick}>
+                Play Again
+            </Button>
+        </div>
+        )}
+        </>
+    )
+}
+
+// const FighterPicker = () => {
+//     const [isRunning, setIsRunning] = useState<boolean>(true);
+//     const [chosenFighter, setChosenFighter] = useState<string>('');
+//     const [rankings, setRankings] = useState<string[]>(['','','','','','','','','','']);
+//     const [showScore, setShowScore] = useState<boolean>(false);
+//     const [showAgain, setShowAgain] = useState<boolean>(false);
+
+//     const handleStop = () => {
+//         setIsRunning(false);
+//     }
+
+//     const handleChosenFighter = (fighter: string) => {
+//         setChosenFighter(fighter)
+//     }
+
+//     const handleSetRanking = (rank: number) => {
+//         const newRankings = [...rankings];
+//         newRankings[rank - 1] = chosenFighter;
+//         setRankings(newRankings);
+//         setChosenFighter('');
+
+//         if (newRankings.every(fighter => fighter !== '')) {
+//             setIsRunning(false);
+//             setShowAgain(true);
+//             setShowScore(true);
+//         } else {
+//             setIsRunning(true);
+//         }
+//     }
+
+//     const handleAgain = () => {
+
+//     }
+
+//     return (
+        
+//         <>
+//         <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+//             <Randomizer 
+//                 isRunning={isRunning}
+//                 fighterRankings={rankings}
+//                 pickFighter={handleChosenFighter}
+//                 handleStop={handleStop}
+//             />
+//             <Score 
+//                 fighterRankings={rankings}
+//                 show={showScore}
+//             />
+//             <AgainButton 
+//                 show={showAgain}
+//                 onClick={handleAgain}
+//             />
+//             <Rankings 
+//                 fighterRankings={rankings} 
+//                 setRanking={handleSetRanking}
+//             />
+//         </div>
+//         </>
+//     )
+// }
+
+const BlindRankings = (props: BlindRankingsProps) => {
     const [isRunning, setIsRunning] = useState<boolean>(true);
     const [chosenFighter, setChosenFighter] = useState<string>('');
     const [rankings, setRankings] = useState<string[]>(['','','','','','','','','','']);
+    const [showScore, setShowScore] = useState<boolean>(false);
+    const [showAgain, setShowAgain] = useState<boolean>(false);
 
     const handleStop = () => {
         setIsRunning(false);
@@ -178,45 +270,55 @@ const FighterPicker = () => {
 
         if (newRankings.every(fighter => fighter !== '')) {
             setIsRunning(false);
+            setShowAgain(true);
+            setShowScore(true);
         } else {
             setIsRunning(true);
         }
     }
 
-    return (
-        <>
-        <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-            <Randomizer 
-                isRunning={isRunning}
-                fighterRankings={rankings}
-                pickFighter={handleChosenFighter}
-                handleStop={handleStop}
-            />
-            <Score fighterRankings={rankings}/>
-            <Rankings 
-                fighterRankings={rankings} 
-                setRanking={handleSetRanking}
-            />
-        </div>
-        </>
-    )
-}
-
-const BlindRankings = (props: BlindRankingsProps) => {
+    const handleAgain = () => {
+        props.handleAgain();
+    }
 
     useEffect(() => {
         if (props.show) {
             window.scrollTo(0, 0);
+
+            setChosenFighter('');
+            setRankings(['','','','','','','','','',''])
+            setShowAgain(false);
+            setShowScore(false);
+            setIsRunning(true);
         }
     }, [props.show]);
 
     return (
         <>
+        <MantineProvider>
         {props.show && (
-            <div style={{ margin: '2em', padding: '1em' }}>
-                <FighterPicker />
+            <div className="blind-rankings-container">
+                <Randomizer 
+                    isRunning={isRunning}
+                    fighterRankings={rankings}
+                    pickFighter={handleChosenFighter}
+                    handleStop={handleStop}
+                />
+                <Score 
+                    fighterRankings={rankings}
+                    show={showScore}
+                />
+                <AgainButton 
+                    show={showAgain}
+                    onClick={handleAgain}
+                />
+                <Rankings 
+                    fighterRankings={rankings} 
+                    setRanking={handleSetRanking}
+                />
             </div>
         )}
+        </MantineProvider>
         </>
     )
 }

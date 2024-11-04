@@ -220,6 +220,12 @@ const NormalRankings = (props: NormalRankingsProps) => {
     useEffect(() => {
         if (props.show) {
             window.scrollTo(0, 0);
+
+            setChosenFighter('');
+            setRankings(['','','','','','','','','','']);
+            setShowScore(false);
+            setShowNext(false);
+            setIsRunning(true);
         }
     }, [props.show]);
 
