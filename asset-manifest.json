@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/mmablindrankings/static/css/main.6945b8ee.css",
-    "main.js": "/mmablindrankings/static/js/main.2897db71.js",
+    "main.css": "/mmablindrankings/static/css/main.d4795099.css",
+    "main.js": "/mmablindrankings/static/js/main.ec9a98cf.js",
     "static/js/453.28d48872.chunk.js": "/mmablindrankings/static/js/453.28d48872.chunk.js",
     "index.html": "/mmablindrankings/index.html",
-    "main.6945b8ee.css.map": "/mmablindrankings/static/css/main.6945b8ee.css.map",
-    "main.2897db71.js.map": "/mmablindrankings/static/js/main.2897db71.js.map",
+    "main.d4795099.css.map": "/mmablindrankings/static/css/main.d4795099.css.map",
+    "main.ec9a98cf.js.map": "/mmablindrankings/static/js/main.ec9a98cf.js.map",
     "453.28d48872.chunk.js.map": "/mmablindrankings/static/js/453.28d48872.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.6945b8ee.css",
-    "static/js/main.2897db71.js"
+    "static/css/main.d4795099.css",
+    "static/js/main.ec9a98cf.js"
   ]
 }
