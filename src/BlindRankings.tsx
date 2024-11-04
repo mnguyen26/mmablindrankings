@@ -64,12 +64,12 @@ const Randomizer = (props: RandomizerProps) => {
     return (
         <>
         <div onClick={props.isRunning ? props.handleStop : undefined} style={{ cursor: props.isRunning ? 'pointer' : 'default' }}>
-            <div style={{ width: '10em', height: '10em', overflow: 'hidden', margin: '0 auto' }}>
+            <div className="fighter-card">
                 {!props.isRunning && fighterPic && (
-                    <img src={fighterPic} alt={randomFighter} style={{ width: '100%', height: 'auto' }} />
+                    <img src={fighterPic} className="fighter-img" alt={randomFighter} />
                 )}
             </div>
-            <div style={{ width: '20em', height: '2em', overflow: 'hidden', textAlign: 'center' }}>
+            <div className="instruction-text">
                 {!props.isRunning && randomFighter && (
                     <div>Select a rank for {randomFighter}</div>
                 )}
@@ -77,7 +77,7 @@ const Randomizer = (props: RandomizerProps) => {
                     <div>{randomFighter}</div>
                 )}
             </div>
-            <div style={{ textAlign: 'center', margin: '1em', width: '20em', height: '2em' }}>
+            <div className="instruction-text">
                 {props.isRunning && (
                     <>
                     Click to stop
@@ -97,7 +97,8 @@ const Rankings = (props: RankingsProps) => {
         <>
         {Array.from({ length: 10 }, (_, index) => (
             <div 
-                style={{ cursor: props.fighterRankings[index] !== '' ? 'not-allowed' : 'pointer', width: '20em', padding: '20px', border: '1px solid black' }}
+                className="ranking-card"
+                style={{ cursor: props.fighterRankings[index] !== '' ? 'not-allowed' : 'pointer' }}
                 key={index + 1} 
                 onClick={() => {
                     if (props.fighterRankings[index] !== '') return;
@@ -204,14 +205,18 @@ const FighterPicker = () => {
 
 const BlindRankings = (props: BlindRankingsProps) => {
 
+    useEffect(() => {
+        if (props.show) {
+            window.scrollTo(0, 0);
+        }
+    }, [props.show]);
+
     return (
         <>
         {props.show && (
-        // <MantineProvider >
             <div style={{ margin: '2em', padding: '1em' }}>
                 <FighterPicker />
             </div>
-        // </MantineProvider>
         )}
         </>
     )
