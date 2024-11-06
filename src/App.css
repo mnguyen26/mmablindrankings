@@ -21,6 +21,7 @@
 }
 
 .fighters-card {
+  height: 5.7em;
   margin: 0 0 0 .2em;
   text-align: center;
   border-radius: 10px;

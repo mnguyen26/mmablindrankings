@@ -186,67 +186,6 @@ const AgainButton = (props: AgainButtonProps) =>  {
     )
 }
 
-// const FighterPicker = () => {
-//     const [isRunning, setIsRunning] = useState<boolean>(true);
-//     const [chosenFighter, setChosenFighter] = useState<string>('');
-//     const [rankings, setRankings] = useState<string[]>(['','','','','','','','','','']);
-//     const [showScore, setShowScore] = useState<boolean>(false);
-//     const [showAgain, setShowAgain] = useState<boolean>(false);
-
-//     const handleStop = () => {
-//         setIsRunning(false);
-//     }
-
-//     const handleChosenFighter = (fighter: string) => {
-//         setChosenFighter(fighter)
-//     }
-
-//     const handleSetRanking = (rank: number) => {
-//         const newRankings = [...rankings];
-//         newRankings[rank - 1] = chosenFighter;
-//         setRankings(newRankings);
-//         setChosenFighter('');
-
-//         if (newRankings.every(fighter => fighter !== '')) {
-//             setIsRunning(false);
-//             setShowAgain(true);
-//             setShowScore(true);
-//         } else {
-//             setIsRunning(true);
-//         }
-//     }
-
-//     const handleAgain = () => {
-
-//     }
-
-//     return (
-        
-//         <>
-//         <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-//             <Randomizer 
-//                 isRunning={isRunning}
-//                 fighterRankings={rankings}
-//                 pickFighter={handleChosenFighter}
-//                 handleStop={handleStop}
-//             />
-//             <Score 
-//                 fighterRankings={rankings}
-//                 show={showScore}
-//             />
-//             <AgainButton 
-//                 show={showAgain}
-//                 onClick={handleAgain}
-//             />
-//             <Rankings 
-//                 fighterRankings={rankings} 
-//                 setRanking={handleSetRanking}
-//             />
-//         </div>
-//         </>
-//     )
-// }
-
 const BlindRankings = (props: BlindRankingsProps) => {
     const [isRunning, setIsRunning] = useState<boolean>(true);
     const [chosenFighter, setChosenFighter] = useState<string>('');
@@ -272,6 +211,8 @@ const BlindRankings = (props: BlindRankingsProps) => {
             setIsRunning(false);
             setShowAgain(true);
             setShowScore(true);
+
+            window.scrollTo({ top: 0, behavior: 'smooth' })
         } else {
             setIsRunning(true);
         }

@@ -99,7 +99,7 @@ const Randomizer = (props: RandomizerProps) => {
                         >
                             <img 
                                 src={pic} alt={randomFighters[index]} 
-                                style={{ width: '53%', height: 'auto', margin: '.5em 0 0 0' }} 
+                                style={{ width: '47%', height: 'auto', margin: '.5em 0 0 0' }} 
                             />
                             <div style={{ fontSize: '0.7em' }}>
                                 {randomFighters[index]}
@@ -254,7 +254,7 @@ const NormalRankings = (props: NormalRankingsProps) => {
                 setShowScore(true);
                 setShowNext(true);
 
-                window.scrollTo({ top: 100, behavior: 'smooth' })
+                window.scrollTo({ top: 0, behavior: 'smooth' })
             }
         }
     }
