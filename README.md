@@ -18,7 +18,7 @@ After both rounds, your rankings are scored based on how closely they align with
 
 Check out the app here: (https://mnguyen26.github.io/mmablindrankings/)
 
-## 
+###
 
 This game highlights the common challenge of making choices with limited information. In our actual lives we have to do this all the time because we rarely get to see all our options at once; for example, picking a partner or a career path. We usually have to go through each option one at a time without knowing the quality of future choices. When making these decisions we try to aim for "local maximums" since there is a degree of uncertainty of something better coming later on. As difficult as this might seem, people are still able to make good choices even with such constraints. Our minds intuitively estimate risk and we have to subconsciously make decisions like these every day without deliberate thought.
 
