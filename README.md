@@ -4,6 +4,8 @@ A game where you will rank MMA fighters when presented with all choices at once 
 
 ## How to play
 
+(https://mnguyen26.github.io/mmablindrankings/)
+
 Screen 1: You'll receive ten random fighters to rank based on their career peaks (not current ability). Click a fighter to select them and then click a slot to rank them at that position. 
 
 Screen 2: You'll also rank ten fighters but you'll see them one by one, ranking each as they appear. You won't know who's coming next, and you can't adjust previous rankings. Click at the top to stop the randomizer and then click a slot to rank the chosen fighter at that position.
