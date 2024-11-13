@@ -1,9 +1,20 @@
 .paragraph-header {
-  font-size: 1.5em
+  font-size: 1.5em;
+  margin: 1em 0 1em 0;
 }
 
 .paragraph-text {
   font-size: 1em
+}
+
+.about-button {
+  width: fit-content;
+  border: 1px solid lightgray;
+  border-radius: 20px;
+  margin: 0 0 0 1em;
+  padding: .3em .5em .3em .5em;
+  font-size: .6em;
+  cursor: pointer;
 }
 
 .fighters-head {
